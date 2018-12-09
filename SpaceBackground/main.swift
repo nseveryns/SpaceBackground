@@ -47,6 +47,19 @@ func saveFile(data: Data, name: String, attemptFix: Bool) -> Bool {
     return true
 }
 
+func setInformation() {
+    let path = filePath + "info.txt"
+    var string = responseData?.title;
+    if (responseData?.copyright != nil) {
+        string?.append(" by ")
+        string?.append((responseData?.copyright)!)
+    }
+    string?.append("\n\n")
+    string?.append((responseData?.explanation)!)
+    let data = string?.data(using: .utf8)
+    FileManager.default.createFile(atPath: path, contents: data, attributes: nil)
+}
+
 func setBackground(name: String) {
     do {
         let path = filePath + name
@@ -54,6 +67,7 @@ func setBackground(name: String) {
         let workspace = NSWorkspace.shared
         if let screen = NSScreen.main  {
             try workspace.setDesktopImageURL(url, for: screen, options: [:])
+            setInformation()
         }
     } catch {
         print(error)
@@ -89,9 +103,11 @@ func handleInitialData() {
         print("Response data does not exist.")
         exit(EXIT_FAILURE)
     }
+    if (responseData?.media_type.elementsEqual("video"))! {
+        return
+    }
     if let url = URL(string: (responseData?.hdurl)!) {
         downloadImage(url: url)
-        //Handle
     }
 }
 
