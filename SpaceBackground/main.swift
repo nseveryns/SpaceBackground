@@ -18,7 +18,7 @@ guard let url = URL(string: urlString) else {
 }
 
 struct Response: Codable {
-    let copyright: String
+    let copyright: String?
     let date: String
     let explanation: String
     let hdurl: String
